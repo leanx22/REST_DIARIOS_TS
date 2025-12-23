@@ -1,0 +1,16 @@
+meta {
+  name: DELETE_DIARY
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:3000/diaries/7d43e514-a1a0-4e28-84fa-d66fa2950d58
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

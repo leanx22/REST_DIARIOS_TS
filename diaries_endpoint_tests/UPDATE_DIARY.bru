@@ -1,0 +1,22 @@
+meta {
+  name: UPDATE_DIARY
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/diaries/10786f9f-1e42-4964-a79f-bd1485fddbc0
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "content":"Pruebitaaaa"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
