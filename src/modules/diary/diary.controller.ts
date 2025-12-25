@@ -1,6 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {DiaryService} from "./diary.service"
 import { createDiarySchema, diaryIdSchema, updateDiarySchema } from "./diary.schema";
+import { ValidationError } from "../../shared/errors/validationError";
+import { AppError } from "../../shared/errors/app.error";
 
 export class DiaryController{
 
@@ -10,11 +12,11 @@ export class DiaryController{
         this.diaryService = diaryService;
     }
 
-    create = async (req: Request, res: Response)=>{
+    create = async (req: Request, res: Response, _next: NextFunction)=>{
         const parsed = createDiarySchema.safeParse(req.body);
 
-        if(!parsed.success){
-            return res.status(400).json({message: parsed.error});
+        if(parsed.error){
+            throw new ValidationError(parsed.error);
         }
 
         const result = await this.diaryService.create(parsed.data);
@@ -22,7 +24,7 @@ export class DiaryController{
         if(result){
             return res.status(201).json({resource:result});
         }else{
-            return res.status(400).json({message:"No se pudo crear!"});
+            throw new AppError("Unable to create", 500, "APP_ERR");
         }
         
     }
@@ -32,57 +34,43 @@ export class DiaryController{
         return res.json(diaries); //ver bien que hace exactamente el metodo json
     }
 
-    findById = async (req: Request, res: Response)=>{
+    findById = async (req: Request, res: Response, _next: NextFunction)=>{
         const parsed = diaryIdSchema.safeParse(req.params);
 
-        if(!parsed.success){
-            return res.status(400).json({message: parsed.error.message});
+        if(parsed.error){
+            throw new ValidationError(parsed.error);
         }
 
         const diary = await this.diaryService.findById(parsed.data.id);
-
-        if(!diary){
-            return res.status(404).json({message: "No se encontró el diario."});
-        }
-
+        
         return res.json(diary);
     }
 
-    deleteById = async (req: Request, res: Response)=>{
+    deleteById = async (req: Request, res: Response, _next: NextFunction)=>{
         const parsed = diaryIdSchema.safeParse(req.params);
 
-        if(!parsed.success){
-            return res.status(400).json({message: parsed.error.message});
+        if(parsed.error){
+            throw new ValidationError(parsed.error);
         }
 
-        try{
-            await this.diaryService.deleteById(parsed.data.id);
-            return res.status(200).end();
-        }catch(err: any){
-            return res.status(404).json({message: `No se pudo eliminar: ${err.message}`});
-        }
-
+        await this.diaryService.deleteById(parsed.data.id);
+        return res.status(200).end();
     }
 
-    updateById = async (req: Request, res: Response)=>{
+    updateById = async (req: Request, res: Response, _next: NextFunction)=>{
         const paramsParsed = diaryIdSchema.safeParse(req.params);
-        if(!paramsParsed.success){
-            return res.status(400).json({message: paramsParsed.error.message});
+
+        if(paramsParsed.error){
+            throw new ValidationError(paramsParsed.error);
         }
 
         const bodyParsed = updateDiarySchema.safeParse(req.body);
-        if(!bodyParsed.success){
-            return res.status(400).json({message: bodyParsed.error.message});
+        if(bodyParsed.error){
+            throw new ValidationError(bodyParsed.error);
         }
 
-        try{
-
-            await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content);
-            return res.status(204).end();
-
-        }catch(err: any){
-            return res.status(404).json({message: `No se pudo modificar: ${err.message}`});
-        }
+        await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content);
+        return res.status(204).end();
     }
 
 }

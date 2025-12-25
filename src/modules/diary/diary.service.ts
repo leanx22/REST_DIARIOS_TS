@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Diary } from "./diary.model";
 import { DiaryRepository } from "./diary.repository"
 import { createDiaryInput } from "./diary.schema"
+import { NotFoundError } from "../../shared/errors/notFound";
 
 export class DiaryService{
     private readonly diaryRepository: DiaryRepository;
@@ -28,14 +29,21 @@ export class DiaryService{
     }
 
     async findById(id: string): Promise<Diary | null>{
-        return this.diaryRepository.findById(id); //Por que no valido que sea un id correcto?
+        const diary = await this.diaryRepository.findById(id);
+
+        if(!diary){
+            throw new NotFoundError("Diary");
+        }
+
+        return diary;
+
     }
 
     async update(id:string, content: string): Promise<void>{
         const existing = await this.diaryRepository.findById(id);
 
         if(!existing){
-            throw new Error("No existe el diario que se intenta eliminar.");
+            throw new NotFoundError("Diary");
         }
 
         const updated: Diary = {
@@ -52,7 +60,7 @@ export class DiaryService{
         const existing = await this.diaryRepository.findById(id);
 
         if(!existing){
-            throw new Error("No existe el diario que se intenta eliminar.");
+            throw new NotFoundError("Diary");
         }
 
         return this.diaryRepository.deleteById(id);
