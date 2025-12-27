@@ -11,6 +11,25 @@ export async function connectMongo(): Promise<Db> {
         const client = new MongoClient(uri);
         await client.connect();
         db = client.db(dbName);
+
+        console.log("Conectado a MongoDB");
+
+        await setupIndexes(db);
+
     }
     return db;
+}
+
+
+async function setupIndexes(db:Db) {
+    try {
+        const usersCollection = db.collection("users");
+
+        await usersCollection.createIndex(
+            { email: 1 },    
+            { unique: true }
+        );
+    } catch (error) {
+        console.error("Error configurando índices de MongoDB:", error);
+    }
 }

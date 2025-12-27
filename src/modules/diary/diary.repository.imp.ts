@@ -6,9 +6,9 @@ import { DiaryDocument } from "./diary.mongo"
 
 export class MongoDiaryRepository implements DiaryRepository{
     
-    private collection!: Collection<DiaryDocument> //No comprendo
+    private collection!: Collection<DiaryDocument>
 
-    private async getCollection(): Promise<Collection<DiaryDocument>>{ //no entiendo
+    private async getCollection(): Promise<Collection<DiaryDocument>>{
         if(!this.collection){
             const db = await connectMongo();
             this.collection = db.collection<DiaryDocument>("diaries");
@@ -16,7 +16,7 @@ export class MongoDiaryRepository implements DiaryRepository{
         return this.collection;
     }
 
-    private toDomain(doc: DiaryDocument): Diary{
+    private toDiary(doc: DiaryDocument): Diary{
         return{
             id: doc.id,
             content: doc.content,
@@ -28,7 +28,7 @@ export class MongoDiaryRepository implements DiaryRepository{
     async save(diary: Diary): Promise<void> {
         const collection = await this.getCollection();
         await collection.insertOne({
-            _id: undefined as any, //No comprendo el por que
+            _id: undefined as any,
             id: diary.id,
             content: diary.content,
             createdAt: diary.createdAt,
@@ -39,17 +39,17 @@ export class MongoDiaryRepository implements DiaryRepository{
     async findById(id: string): Promise<Diary | null> {
         const collection = await this.getCollection();
 
-        const doc = await collection.findOne({id}); //por que {id} y no {id:id}
+        const doc = await collection.findOne({id});
         if(!doc){
             return null;
         }
-        return this.toDomain(doc); //Se podria hacer mas facil sin necesidad de una funcion, tal vez omit o algo asi.
+        return this.toDiary(doc);
     }
 
     async findAll(): Promise<Diary[]> {
         const collection = await this.getCollection();
         const res = await collection.find({}).toArray();
-        return res.map(this.toDomain);
+        return res.map(doc=>this.toDiary(doc));
     }
 
     async update(diary: Diary): Promise<void> {
