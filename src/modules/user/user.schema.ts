@@ -5,4 +5,9 @@ export const createUserChema = z.object({
     password: z.string().min(8, "Password must be at least 8 chars long")
 });
 
+export const loginUserChema = z.object({
+    email: z.email({error: "Invalid email"}),
+    password: z.string().min(8, "Password must be at least 8 chars long")
+});
+
 

@@ -3,7 +3,10 @@ import { AppError } from "../../shared/errors/app.error";
 import { User } from "./user.model";
 import { UserRepository } from "./user.repository";
 import bcrypt from 'bcrypt';
-import { UserDTO } from "./user.dto";
+import { AuthResponse } from "../auth/authResponse.dto";
+import { signToken } from "../../utils/jwt";
+import { AuthError } from "../../shared/errors/authError";
+
 
 export class UserService{
     
@@ -13,7 +16,7 @@ export class UserService{
         this.userRepository = userRepo;
     }
 
-    async register(email: string, password: string):Promise<UserDTO>{
+    async register(email: string, password: string):Promise<AuthResponse>{
 
         const existingUser = await this.userRepository.findByEmail(email);
 
@@ -36,8 +39,38 @@ export class UserService{
             throw new AppError("Unable to register", 500, "DB_ERROR");    
         }
 
-        return {id:newUser.id, email:newUser.email}
+        const token = signToken({
+            id: newUser.id,
+            email: newUser.email
+        });
+
+        return {id:newUser.id, email:newUser.email, token: token};
         
+    }
+
+    async login(email: string, password: string): Promise<AuthResponse>{
+        const user = await this.userRepository.findByEmail(email);
+
+        if(!user){
+            throw new AuthError();
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+        if(!isPasswordValid){
+            throw new AuthError();
+        }
+
+        const token = signToken({
+            id: user.id,
+            email: user.email
+        });
+
+        return {
+            id: user.id,
+            email: user.email,
+            token: token
+        }
     }
 
 }
