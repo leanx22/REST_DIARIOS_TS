@@ -13,13 +13,18 @@ export class DiaryController{
     }
 
     create = async (req: Request, res: Response, _next: NextFunction)=>{
+        
+        if(!req.user){ //Esto ya lo hace el middleware! SACAR Y PROBAR
+            throw new AppError("Login first", 401, "UNAUTHORIZED");
+        }
+        
         const parsed = createDiarySchema.safeParse(req.body);
 
         if(parsed.error){
             throw new ValidationError(parsed.error);
         }
 
-        const result = await this.diaryService.create(parsed.data);
+        const result = await this.diaryService.create(parsed.data, req.user.id);
 
         if(result){
             return res.status(201).json({resource:result});
@@ -53,7 +58,7 @@ export class DiaryController{
             throw new ValidationError(parsed.error);
         }
 
-        await this.diaryService.deleteById(parsed.data.id);
+        await this.diaryService.deleteById(parsed.data.id, req.user!.id);
         return res.status(200).end();
     }
 
@@ -69,7 +74,8 @@ export class DiaryController{
             throw new ValidationError(bodyParsed.error);
         }
 
-        await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content);
+        await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content, req.user!.id); //Ya deberia estar validado por el middleware
+
         return res.status(204).end();
     }
 

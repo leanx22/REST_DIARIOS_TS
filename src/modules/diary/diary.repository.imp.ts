@@ -19,6 +19,7 @@ export class MongoDiaryRepository implements DiaryRepository{
     private toDiary(doc: DiaryDocument): Diary{
         return{
             id: doc.id,
+            creatorId: doc.creatorId,
             content: doc.content,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
@@ -30,6 +31,7 @@ export class MongoDiaryRepository implements DiaryRepository{
         await collection.insertOne({
             _id: undefined as any,
             id: diary.id,
+            creatorId: diary.creatorId,
             content: diary.content,
             createdAt: diary.createdAt,
             updatedAt: diary.updatedAt

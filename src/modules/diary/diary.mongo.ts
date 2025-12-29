@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 export interface DiaryDocument{
     _id: ObjectId,
     id: string,
+    creatorId: string,
     content: string,
     createdAt: Date,
     updatedAt: Date

@@ -12,7 +12,7 @@ declare global { //Este es el mejor lugar donde declarar esto?
     }
 }
 
-export const ensureAuth = (req: Request, res: Response, next: NextFunction) => {
+export const ensureAuth = (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if(!authHeader){

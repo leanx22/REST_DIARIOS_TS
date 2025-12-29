@@ -5,11 +5,11 @@ import { ensureAuth } from "../../shared/middleware/auth.middleware";
 export const createDiaryRouter = (controller: DiaryController): Router => {
     const router = Router();
 
-    router.post('/', controller.create);
+    router.post('/', ensureAuth,controller.create);
     router.get('/', controller.findAll);
     router.get('/:id', controller.findById);
-    router.put('/:id', controller.updateById);
-    router.delete('/:id', controller.deleteById);
+    router.put('/:id', ensureAuth,controller.updateById);
+    router.delete('/:id', ensureAuth,controller.deleteById);
 
     return router;
 };
