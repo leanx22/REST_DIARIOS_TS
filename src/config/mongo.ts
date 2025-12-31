@@ -8,7 +8,9 @@ let db: Db;
 
 export async function connectMongo(): Promise<Db> {
     if(!db){
-        const client = new MongoClient(uri);
+        const client = new MongoClient(uri, {
+            serverSelectionTimeoutMS: 5000
+        });
         await client.connect();
         db = client.db(dbName);
 
@@ -29,7 +31,11 @@ async function setupIndexes(db:Db) {
             { email: 1 },    
             { unique: true }
         );
+
+        console.log("Indices de la colección usuarios creado en la BD.");
+
     } catch (error) {
         console.error("Error configurando índices de MongoDB:", error);
+        process.exit(1);
     }
 }

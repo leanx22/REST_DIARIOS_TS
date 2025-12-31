@@ -6,11 +6,11 @@ export interface UserPayload {
     email: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'test';
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 export const signToken = (payload: UserPayload): string => {
     return jwt.sign(payload, JWT_SECRET, {
-        expiresIn: '2h',
+        expiresIn: '1h',
         algorithm: 'HS256'
     });
 };

@@ -26,9 +26,9 @@ export class MongoDiaryRepository implements DiaryRepository{
         }
     }
 
-    async save(diary: Diary): Promise<void> {
+    async save(diary: Diary): Promise<boolean> {
         const collection = await this.getCollection();
-        await collection.insertOne({
+        const result = await collection.insertOne({
             _id: undefined as any,
             id: diary.id,
             creatorId: diary.creatorId,
@@ -36,6 +36,8 @@ export class MongoDiaryRepository implements DiaryRepository{
             createdAt: diary.createdAt,
             updatedAt: diary.updatedAt
         });
+
+        return result.acknowledged;
     }
 
     async findById(id: string): Promise<Diary | null> {
@@ -54,10 +56,10 @@ export class MongoDiaryRepository implements DiaryRepository{
         return res.map(doc=>this.toDiary(doc));
     }
 
-    async update(diary: Diary): Promise<void> {
+    async update(diary: Diary): Promise<boolean> {
         const collection = await this.getCollection();
 
-        await collection.updateOne(
+        const updateResult = await collection.updateOne(
             {id: diary.id},
             {
                 $set:{
@@ -66,11 +68,14 @@ export class MongoDiaryRepository implements DiaryRepository{
                 }
             }
         );
+        
+        return updateResult.acknowledged;
     }
 
-    async deleteById(id: string): Promise<void> {
+    async deleteById(id: string): Promise<boolean> {
         const collection = await this.getCollection();
-        await collection.deleteOne({id});
+        const deleteResult = await collection.deleteOne({id});
+        return deleteResult.acknowledged;
     }
 
 }

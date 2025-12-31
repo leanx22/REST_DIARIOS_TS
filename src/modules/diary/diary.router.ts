@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { DiaryController } from './diary.controller'
-import { ensureAuth } from "../../shared/middleware/auth.middleware";
+import { ensureAuth } from "../../shared/middleware/authenticationMiddleware";
 
 export const createDiaryRouter = (controller: DiaryController): Router => {
     const router = Router();

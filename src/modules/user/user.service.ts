@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { AppError } from "../../shared/errors/app.error";
+import { AppError } from "../../shared/errors/appError";
 import { User } from "./user.model";
 import { UserRepository } from "./user.repository";
 import bcrypt from 'bcrypt';
 import { AuthResponse } from "../auth/authResponse.dto";
 import { signToken } from "../../utils/jwt";
-import { AuthError } from "../../shared/errors/authError";
+import { AuthError } from "../../shared/errors/auth/authenticationError";
 
 
 export class UserService{

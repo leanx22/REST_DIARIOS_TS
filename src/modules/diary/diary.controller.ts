@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {DiaryService} from "./diary.service"
 import { createDiarySchema, diaryIdSchema, updateDiarySchema } from "./diary.schema";
-import { ValidationError } from "../../shared/errors/validationError";
-import { AppError } from "../../shared/errors/app.error";
+import { ValidationError } from "../../shared/errors/request/validationError";
 
 export class DiaryController{
 
@@ -12,31 +11,20 @@ export class DiaryController{
         this.diaryService = diaryService;
     }
 
-    create = async (req: Request, res: Response, _next: NextFunction)=>{
-        
-        if(!req.user){ //Esto ya lo hace el middleware! SACAR Y PROBAR
-            throw new AppError("Login first", 401, "UNAUTHORIZED");
-        }
-        
+    create = async (req: Request, res: Response, _next: NextFunction)=>{        
         const parsed = createDiarySchema.safeParse(req.body);
 
         if(parsed.error){
             throw new ValidationError(parsed.error);
         }
 
-        const result = await this.diaryService.create(parsed.data, req.user.id);
-
-        if(result){
-            return res.status(201).json({resource:result});
-        }else{
-            throw new AppError("Unable to create", 500, "APP_ERR");
-        }
-        
+        const createdDiary = await this.diaryService.create(parsed.data, req.user!.id);
+        return res.status(201).json(createdDiary);
     }
 
     findAll = async (_req: Request, res: Response)=>{
         const diaries = await this.diaryService.findAll();
-        return res.json(diaries); //ver bien que hace exactamente el metodo json
+        return res.json(diaries);
     }
 
     findById = async (req: Request, res: Response, _next: NextFunction)=>{
@@ -59,7 +47,7 @@ export class DiaryController{
         }
 
         await this.diaryService.deleteById(parsed.data.id, req.user!.id);
-        return res.status(200).end();
+        return res.status(204).end();
     }
 
     updateById = async (req: Request, res: Response, _next: NextFunction)=>{
@@ -74,9 +62,9 @@ export class DiaryController{
             throw new ValidationError(bodyParsed.error);
         }
 
-        await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content, req.user!.id); //Ya deberia estar validado por el middleware
+        const updatedDiary = await this.diaryService.update(paramsParsed.data.id, bodyParsed.data.content, req.user!.id);
 
-        return res.status(204).end();
+        return res.status(200).json(updatedDiary);
     }
 
 }

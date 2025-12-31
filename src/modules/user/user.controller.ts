@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
 import { createUserChema, loginUserChema } from "./user.schema";
-import { ValidationError } from "../../shared/errors/validationError";
+import { ValidationError } from "../../shared/errors/request/validationError";
 
 export class UserController{
     private userService: UserService;
