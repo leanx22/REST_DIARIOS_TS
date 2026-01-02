@@ -5,7 +5,9 @@ import { UserRepository } from "./user.repository";
 import bcrypt from 'bcrypt';
 import { AuthResponse } from "../auth/authResponse.dto";
 import { signToken } from "../../utils/jwt";
-import { AuthError } from "../../shared/errors/auth/authenticationError";
+import { AuthenticationError } from "../../shared/errors/auth/authenticationError";
+import { AlreadyExistsError } from "../../shared/errors/resource/alreadyExists";
+import { ServerError } from "../../shared/errors/internal/serverError";
 
 
 export class UserService{
@@ -21,7 +23,7 @@ export class UserService{
         const existingUser = await this.userRepository.findByEmail(email);
 
         if(existingUser){
-            throw new AppError("Registration failed", 400, "ALREADY_EXISTS");
+            throw new AlreadyExistsError('User');
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
@@ -36,7 +38,7 @@ export class UserService{
         const newUser = await this.userRepository.create(user);
         
         if(!newUser){
-            throw new AppError("Unable to register", 500, "DB_ERROR");    
+            throw new ServerError("Cant be created");    
         }
 
         const token = signToken({
@@ -49,16 +51,18 @@ export class UserService{
     }
 
     async login(email: string, password: string): Promise<AuthResponse>{
+        const loginErrorMessage = "The information entered does not correspond to an active user";
+
         const user = await this.userRepository.findByEmail(email);
 
         if(!user){
-            throw new AuthError();
+            throw new AuthenticationError(loginErrorMessage);
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
         if(!isPasswordValid){
-            throw new AuthError();
+            throw new AuthenticationError(loginErrorMessage);
         }
 
         const token = signToken({

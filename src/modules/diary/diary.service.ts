@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Diary } from "./diary.model";
 import { DiaryRepository } from "./diary.repository"
 import { createDiaryInput } from "./diary.schema"
-import { NotFoundError } from "../../shared/errors/instance/notFound";
+import { NotFoundError } from "../../shared/errors/resource/notFound";
 import { ServerError } from "../../shared/errors/internal/serverError";
 import { AuthorizationError } from "../../shared/errors/auth/authorizationError";
 
