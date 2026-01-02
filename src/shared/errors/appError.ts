@@ -1,4 +1,4 @@
-import { ErrorCode } from "../../types/errorCodes";
+import { ErrorCode } from "../../utils/errorCodes";
 
 export abstract class AppError extends Error{
     

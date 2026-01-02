@@ -1,4 +1,4 @@
-import { ErrorCode } from "../../../types/errorCodes";
+import { ErrorCode } from "../../../utils/errorCodes";
 import { AppError } from "../appError";
 
 export class NotFoundError extends AppError{
