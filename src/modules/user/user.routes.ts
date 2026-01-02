@@ -8,7 +8,7 @@ export const createUserRouter = (controller: UserController): Router => {
      * @swagger
      * /users/register:
      *   post:
-     *     summary: Create a new user
+     *     summary: Registers a new user
      *     tags: [Auth]
      *     requestBody:
      *       required: true
@@ -67,7 +67,7 @@ export const createUserRouter = (controller: UserController): Router => {
      * @swagger
      * /users/login:
      *   post:
-     *     summary: User login
+     *     summary: Authenticates a user
      *     tags: [Auth]
      *     requestBody:
      *       required: true
@@ -104,7 +104,7 @@ export const createUserRouter = (controller: UserController): Router => {
      *                   type: string
      *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
      *       401:
-     *         description: Bad credentials, not found.
+     *         description: Invalid credentials
      *         content:
      *           application/json:
      *             schema:

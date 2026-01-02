@@ -9,7 +9,7 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      * @swagger
      * /diaries:
      *   post:
-     *     summary: Creates a new diary entry.
+     *     summary: Creates a new diary entry
      *     tags: [Diaries]
      *     security:
      *       - bearerAuth: []
@@ -43,10 +43,12 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      *                     type: string
      *                     example: My first diary
      *                   createdAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z
      *                   updatedAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z  
      *       401:
      *         description: Unauthorized.
@@ -87,11 +89,11 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      * @swagger
      * /diaries:
      *   get:
-     *     summary: Get all diary entries.
+     *     summary: Retrieves all diary entries
      *     tags: [Diaries]
      *     responses:
      *       200:
-     *         description: Diary entries were found successfully.
+     *         description: Diary entries retrieved successfully.
      *         content:
      *           application/json:
      *             schema:
@@ -110,9 +112,11 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      *                     example: Today was a great day!    
      *                   createdAt:
      *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z           
      *                   updatedAt:
      *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z
      */
     router.get('/', controller.findAll);
@@ -121,7 +125,7 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      * @swagger
      * /diaries/{id}:
      *   get:
-     *     summary: Get a diary entry by ID.
+     *     summary: Retrieves a diary entry by ID
      *     tags: [Diaries]
      *     parameters:
      *       - in: path
@@ -148,10 +152,12 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      *                     type: string
      *                     example: Today was a great day!
      *                   createdAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z
      *                   updatedAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z  
      *       404:
      *         description: Diary entry not found.
@@ -231,10 +237,12 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      *                     type: string
      *                     example: Today is a sad day
      *                   createdAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:49:13.223Z
      *                   updatedAt:
-     *                     type: date
+     *                     type: string
+     *                     format: date-time
      *                     example: 2026-01-02T20:58:31.163Z
      *       401:
      *         description: Unauthorized.
@@ -275,7 +283,7 @@ export const createDiaryRouter = (controller: DiaryController): Router => {
      * @swagger
      * /diaries/{id}:
      *   delete:
-     *     summary: Delete a diary entry.
+     *     summary: Deletes a diary entry
      *     tags: [Diaries]
      *     security:
      *       - bearerAuth: []
