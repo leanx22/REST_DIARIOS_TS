@@ -14,5 +14,10 @@ export class UserRepositoryLocal implements UserRepository{
         return user;
     }
 
+    async findById(id: string): Promise<User | null> {
+        const result = this.users.find(u=>u.id == id);
+        if(result) return result;
+        return null;
+    }
 
 }

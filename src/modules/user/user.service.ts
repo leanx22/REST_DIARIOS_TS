@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import { AppError } from "../../shared/errors/appError";
 import { User } from "./user.model";
 import { UserRepository } from "./user.repository";
 import bcrypt from 'bcrypt';
